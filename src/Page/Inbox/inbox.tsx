@@ -1,3 +1,5 @@
+// src/pages/Inbox/Inbox.tsx
+import React from "react";
 import { emailsData } from "../../Constants/emailsData";
 import InboxSlidebar from "./InboxSlidebar/InboxSlidebar";
 import InboxTable from "./InboxTable/InboxTable";

@@ -46,7 +46,7 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-black p-4 overflow-hidden">
+    <div className="relative w-full h-screen flex items-center justify-center bg-black p-4 overflow-hidden">
       {/* Background with slow zoom and slight move */}
       <motion.div
         className="absolute inset-0 z-0"
@@ -73,6 +73,7 @@ export default function SignupForm() {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="relative z-10 flex max-w-4xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
+        style={{ minHeight: "600px" }} // optional, to keep decent height on bigger screens
       >
         {/* Left Info Panel (hidden on small screens) */}
         <motion.div
@@ -101,7 +102,7 @@ export default function SignupForm() {
 
         {/* Signup Form */}
         <motion.div
-          className="w-full md:w-1/2 p-10 bg-white bg-opacity-90 backdrop-blur-md rounded-r-2xl"
+          className="w-full md:w-1/2 p-10 bg-white bg-opacity-90 backdrop-blur-md rounded-r-2xl flex flex-col justify-center"
           variants={containerAnim}
           initial="hidden"
           animate="visible"
