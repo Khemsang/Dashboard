@@ -21,26 +21,30 @@ import MainECommerce from "./Page/Main_eCommerce/MainECommerce ";
 const App = () => {
   const location = useLocation();
 
-  // Check if the current page is login or signup
+
   const isAuthPage = location.pathname.startsWith("/auth");
 
   return (
     <UserProvider>
       {isAuthPage ? (
-        // 👇 Fullscreen layout for login/signup
-        <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+     
+        <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
           <Routes>
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<SignUp />} />
           </Routes>
         </div>
       ) : (
-        // 👇 Dashboard layout with sidebar and topbar
-        <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
-          <Sidebar />
+       
+        <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 container">
+   
+          <div className="hidden md:block">
+            <Sidebar />
+          </div>
+
           <div className="flex flex-col flex-1 w-full">
             <Topbar />
-            <main className="flex-1 overflow-y-auto p-4">
+            <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/orders" element={<OrderList />} />

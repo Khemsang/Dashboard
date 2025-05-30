@@ -1,101 +1,83 @@
-import React from "react";
+import React, { useState } from "react";
+import type { User } from "../../../Constants/Chat";
+import { Search } from "lucide-react";
 
-export type Message = {
-  sender: string;
-  text: string;
-  time: string;
-};
-
-export type ChatUser = {
-  id: number | string;
-  name: string;
-  profilePic?: string;
-  messages: Message[];
-};
-
-interface Props {
-  users: ChatUser[];
-  selectedUserId: number | string | null;
-  onUserSelect: (user: ChatUser) => void;
-  onClose: () => void;
+interface ChatSidebarProps {
+  users: User[];
+  onUserSelect: (user: User) => void;
 }
 
-const ChatSidebar: React.FC<Props> = ({ users, selectedUserId, onUserSelect, onClose }) => {
-  return (
-    <div className="h-full flex flex-col w-full">
-      <div className="p-4 border-b sticky top-0 bg-white z-10">
-        <div className="flex justify-between items-center mb-4 ">
-          <h2 className="text-xl font-semibold text-gray-800 mt-10">Active Conversations</h2>
-          <button
-            onClick={onClose}
-            className="md:hidden text-gray-500 hover:text-gray-700"
-            aria-label="Close sidebar"
-          >
-            ✕
-          </button>
-        </div>
+const ChatSidebar: React.FC<ChatSidebarProps> = ({ users, onUserSelect }) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          <svg
-            className="absolute right-3 top-2.5 h-4 w-4 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
+  // Filter users based on search term
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="w-full max-w-sm bg-white border-r h-full p-4 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold">Active Conversations</h2>
+        <span className="bg-gray-100 text-sm px-2 py-1 rounded-full">
+          {filteredUsers.length}
+        </span>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-2">
-        {users.map((user) => {
-          const lastMessage = user.messages[user.messages.length - 1];
-          const isActive = selectedUserId === user.id;
+      {/* Search Input */}
+      <div className="relative mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring focus:border-blue-300"
+        />
+        <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+      </div>
 
-          return (
-            <div
-              key={user.id}
-              onClick={() => onUserSelect(user)}
-              className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                isActive ? "bg-blue-50" : "hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                {user.profilePic ? (
-                  <img
-                    src={user.profilePic}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                    {user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2)}
-                  </div>
-                )}
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-medium text-gray-900 truncate">{user.name}</h3>
-                    {lastMessage?.time && (
-                      <span className="text-xs text-gray-400 whitespace-nowrap ml-2">{lastMessage.time}</span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-500 truncate">{lastMessage?.text || "No messages yet"}</p>
+      {/* List of Conversations */}
+      <div className="space-y-4 overflow-y-auto pr-2 flex-1">
+        {filteredUsers.map((user) => (
+          <div
+            key={user.id}
+            onClick={() => onUserSelect(user)}
+            className="flex items-center gap-3 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
+          >
+            <div className="relative">
+              {user.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  alt={user.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-white uppercase">
+                  {user.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)}
                 </div>
-              </div>
+              )}
+              {user && (
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+              )}
             </div>
-          );
-        })}
+
+            <div className="flex-1">
+              <p className="text-sm font-medium text-gray-900">{user.name}</p>
+              <p className="text-xs text-gray-500 truncate w-48">
+                {user.lastMessage}
+              </p>
+            </div>
+          </div>
+        ))}
+
+        {filteredUsers.length === 0 && (
+          <p className="text-sm text-gray-500 text-center mt-4">No users found.</p>
+        )}
       </div>
     </div>
   );

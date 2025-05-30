@@ -1,162 +1,149 @@
-import { useState, useEffect, useCallback } from "react";
-import { activeConversations } from "../../Constants/Chat"; // your data source
-import { FaTimes } from "react-icons/fa";
-import { MoveLeft } from "lucide-react";
-import type { User } from "../../types/user"; // User type with id: string | number
-import ChatSidebar from "./ChatSidebar/ChatSidebar";
-import ChatWindow from "./ChatWindow/ChatWindow";
-import ProfileSidebar from "./ProfileSidebar/ProfileSidebar";
+import React, { useState, useEffect } from 'react';
+import ChatSidebar from './ChatSidebar/ChatSidebar';
+import ChatWindow from './ChatWindow/ChatWindow';
+import ProfileSidebar from './ProfileSidebar/ProfileSidebar'; 
+import { type User, type ChatMessage, chatMessages, activeConversations } from '../../Constants/Chat';
 
-const useIsSmallScreen = () => {
-  const [isSmall, setIsSmall] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < 768 : false
-  );
+type View = 'sidebar' | 'chat' | 'profile';
 
+const Chat: React.FC = () => {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [profileUser, setProfileUser] = useState<User | null>(null); 
+  const [message, setMessage] = useState('');
+  const [chat, setChat] = useState<ChatMessage[]>([]);
+  const [view, setView] = useState<View>('sidebar');  // Mobile view state
+
+  // On mount, select first user by default and load chat
   useEffect(() => {
-    const handleResize = () => setIsSmall(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    if (activeConversations.length > 0 && !selectedUser) {
+      const firstUser = activeConversations[0];
+      setSelectedUser(firstUser);
+      setProfileUser(firstUser); // set for mobile profile toggle
+      setChat(chatMessages[firstUser.id] || []);
+      setView('chat');  // show chat view by default on mobile
+    }
+  }, [selectedUser]);
 
-  return isSmall;
-};
+  const handleUserSelect = (user: User) => {
+    setSelectedUser(user);
+    setProfileUser(user);  // sync profile user for mobile view toggle
+    const messages = chatMessages[user.id] || [];
+    setChat(messages);
+    setView('chat');
+  };
 
-const Chat = () => {
-  const isSmallScreen = useIsSmallScreen();
-
-  const [conversations, setConversations] = useState<User[]>(activeConversations);
-  const [selectedUserId, setSelectedUserId] = useState<string | number | null>(
-    activeConversations.length > 0 ? activeConversations[0].id : null
-  );
-  const [sidebarOpen, setSidebarOpen] = useState(!isSmallScreen);
-  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
-  const [newMessage, setNewMessage] = useState("");
-
-  useEffect(() => {
-    setSidebarOpen(!isSmallScreen);
-    setShowProfileSidebar(false);
-  }, [isSmallScreen]);
-
-  // Find selected user by id (string or number)
-  const selectedUser = conversations.find((u) => u.id === selectedUserId) ?? null;
-  const selectedMessages = selectedUser?.messages ?? [];
-
-  const handleUserSelect = useCallback(
-    (user: User) => {
-      setSelectedUserId(user.id);
-      if (isSmallScreen) {
-        setSidebarOpen(false);
-        setShowProfileSidebar(false);
-      }
-      setNewMessage("");
-    },
-    [isSmallScreen]
-  );
+  const handleSend = () => {
+    if (!message.trim() || !selectedUser) return;
+    const newMsg: ChatMessage = {
+      text: message,
+      sender: 'You',
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+    const updatedChat = [...chat, newMsg];
+    setChat(updatedChat);
+    setMessage('');
+    chatMessages[selectedUser.id] = updatedChat;
+  };
 
   const handleProfileClick = () => {
-    if (isSmallScreen) {
-      setShowProfileSidebar((prev) => !prev);
+    if (selectedUser) {
+      setProfileUser(selectedUser);
+      setView('profile');  // switch to profile view on mobile
     }
   };
 
-  const handleNewMessageChange = (val: string) => {
-    setNewMessage(val);
-  };
-
-  const handleSendMessage = () => {
-    if (!newMessage.trim() || selectedUserId === null) return;
-
-    setConversations((prevConversations) =>
-      prevConversations.map((user) =>
-        user.id === selectedUserId
-          ? {
-              ...user,
-              messages: [
-                ...user.messages,
-                {
-                  sender: "You",
-                  text: newMessage.trim(),
-                  time: new Date().toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }),
-                },
-              ],
-              lastMessage: newMessage.trim(),
-            }
-          : user
-      )
-    );
-    setNewMessage("");
+  const handleBack = () => {
+    if (view === 'profile') {
+      setView('chat');
+    } else if (view === 'chat') {
+      setView('sidebar');
+      setSelectedUser(null);
+      setProfileUser(null);
+    }
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-gray-50 relative">
-      {!sidebarOpen && isSmallScreen && (
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="absolute top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md md:hidden"
-          aria-label="Open sidebar"
-        >
-          <MoveLeft className="text-gray-600" size={20} />
-        </button>
-      )}
-
-      {/* Sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 bg-white border-r overflow-y-auto z-40
-          w-full max-w-xs transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:relative md:translate-x-0 md:w-80`}
-      >
-        <ChatSidebar
-          users={conversations}
-          selectedUserId={selectedUserId}
-          onUserSelect={handleUserSelect}
-          onClose={() => setSidebarOpen(false)}
-        />
-      </div>
-
-      {/* Chat Window */}
-      <div
-        className={`flex-1 flex flex-col h-full bg-white transition-transform duration-300 ease-in-out
-          ${isSmallScreen && sidebarOpen ? "translate-x-full" : "translate-x-0"}`}
-      >
-        {selectedUser ? (
-          <ChatWindow
-            chat={selectedMessages}
-            newMessage={newMessage}
-            onChange={handleNewMessageChange}
-            onSend={handleSendMessage}
-            user={selectedUser}
-            onProfileClick={handleProfileClick}
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray-400">
-            <p>Select a conversation to start chatting</p>
+    <div className="flex h-full w-full ">
+      {/* Desktop Layout */}
+      <div className="hidden md:flex flex-grow h-full">
+        <div className="flex flex-grow">
+          <div className="flex-[1] ">
+            <ChatSidebar users={activeConversations} onUserSelect={handleUserSelect} />
           </div>
-        )}
+          <div className="flex-[2] border-r border-gray-200">
+            {selectedUser ? (
+              <ChatWindow
+                chat={chat}
+                newMessage={message}
+                onChange={setMessage}
+                onSend={handleSend}
+                user={selectedUser}
+                onProfileClick={handleProfileClick}
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                Select a user to start chatting
+              </div>
+            )}
+          </div>
+          <div className="flex-[1]">
+            {/* On desktop, always show profile of selected user */}
+            {selectedUser ? (
+              <ProfileSidebar user={selectedUser} />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                Select a user to view profile
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Profile Sidebar */}
-      <div
-        className={`fixed inset-y-0 right-0 bg-white border-l overflow-y-auto z-40
-          w-full max-w-xs transition-transform duration-300 ease-in-out
-          ${showProfileSidebar ? "translate-x-0" : "translate-x-full"}
-          lg:relative lg:translate-x-0 lg:w-80`}
-      >
-        {selectedUser && (
+      {/* Mobile Layout */}
+      <div className="flex flex-col w-full md:hidden h-full">
+        {view === 'sidebar' && (
           <>
-            {showProfileSidebar && (
+            <div className="flex items-center p-4 border-b">
+              <h2 className="text-lg font-semibold">Chats</h2>
+            </div>
+            <ChatSidebar users={activeConversations} onUserSelect={handleUserSelect} />
+          </>
+        )}
+
+        {view === 'chat' && selectedUser && (
+          <>
+            <div className="flex items-center p-4 border-b">
               <button
-                onClick={() => setShowProfileSidebar(false)}
-                className="absolute top-4 right-4 z-50 p-2 rounded-md bg-white shadow-md lg:hidden"
-                aria-label="Close profile"
+                onClick={handleBack}
+                className="mr-4 px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
               >
-                <FaTimes className="text-gray-600" size={20} />
+                Back
               </button>
-            )}
-            <ProfileSidebar user={selectedUser} />
+              <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
+            </div>
+            <ChatWindow
+              chat={chat}
+              newMessage={message}
+              onChange={setMessage}
+              onSend={handleSend}
+              user={selectedUser}
+              onProfileClick={handleProfileClick}
+            />
+          </>
+        )}
+
+        {view === 'profile' && profileUser && (
+          <>
+            <div className="flex items-center p-4 border-b">
+              <button
+                onClick={handleBack}
+                className="mr-4 px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
+              >
+                Back
+              </button>
+              <h2 className="text-lg font-semibold">Profile</h2>
+            </div>
+            <ProfileSidebar user={profileUser} />
           </>
         )}
       </div>

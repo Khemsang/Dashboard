@@ -1,6 +1,20 @@
+import React, { type JSX } from "react";
 import CalendarDayBox from "../CalendarDayBox/CalendarDayBox";
 
-const CalendarGrid = ({ view, currentPage, events }) => {
+interface EventType {
+  date?: string; // for week view
+  start?: number; // for month view
+  end?: number; // for month view
+  // Add any other event fields you have
+}
+
+interface CalendarGridProps {
+  view: "Month" | "Week";
+  currentPage: number;
+  events: EventType[];
+}
+
+const CalendarGrid: React.FC<CalendarGridProps> = ({ view, currentPage, events }) => {
   const todayDate = new Date();
 
   let baseDate = new Date(todayDate);
@@ -20,7 +34,7 @@ const CalendarGrid = ({ view, currentPage, events }) => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  let cells = [];
+  let cells: JSX.Element[] = [];
 
   if (view === "Month") {
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
@@ -31,16 +45,24 @@ const CalendarGrid = ({ view, currentPage, events }) => {
     cells = Array.from({ length: totalCells }, (_, index) => {
       const date = index - startDay + 1;
       const isValidDate = date > 0 && date <= daysInMonth;
-      const event = events.find((e) => date >= e.start && date <= e.end);
+      const fullDate = new Date(currentYear, currentMonth, date);
+      const formattedDate = fullDate.toISOString().split("T")[0];
+
+      const event = isValidDate
+        ? events.find((e) => e.start !== undefined && e.end !== undefined && date >= e.start && date <= e.end)
+        : null;
+
       const isToday =
         isValidDate &&
         date === today &&
         baseDate.getMonth() === todayDate.getMonth() &&
         baseDate.getFullYear() === todayDate.getFullYear();
 
+      const cellKey = isValidDate ? formattedDate : `empty-${index}`;
+
       return (
         <CalendarDayBox
-          key={index}
+          key={cellKey}
           date={isValidDate ? date : null}
           event={event}
           isToday={isToday}
@@ -50,17 +72,20 @@ const CalendarGrid = ({ view, currentPage, events }) => {
   } else if (view === "Week") {
     const startOfWeek = new Date(baseDate);
     startOfWeek.setDate(baseDate.getDate() - baseDate.getDay()); // Sunday
+
     cells = Array.from({ length: 7 }, (_, index) => {
       const dayDate = new Date(startOfWeek);
       dayDate.setDate(startOfWeek.getDate() + index);
-      const isToday =
-        dayDate.toDateString() === todayDate.toDateString();
+
+      const formattedDate = dayDate.toISOString().split("T")[0];
+      const isToday = dayDate.toDateString() === todayDate.toDateString();
       const event = events.find(
-        (e) => e.date === dayDate.toISOString().split("T")[0]
+        (e) => e.date === formattedDate
       );
+
       return (
         <CalendarDayBox
-          key={index}
+          key={formattedDate}
           date={dayDate.getDate()}
           event={event}
           isToday={isToday}
@@ -70,7 +95,7 @@ const CalendarGrid = ({ view, currentPage, events }) => {
   }
 
   return (
-    <div className="p-4 sm:p-6 bg-[#f4f7fb] min-h-[60vh] sm:min-h-screen">
+    <div className=" sm:p-6 bg-[#f4f7fb] min-h-[60vh] sm:min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
           {monthNames[currentMonth]} {currentYear}

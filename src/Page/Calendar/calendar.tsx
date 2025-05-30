@@ -2,7 +2,7 @@ import React from "react";
 import CalendarHeader from "./CalendarHeader/CalendarHeader";
 import CalendarGrid from "./CalendarGrid/CalendarGrid";
 
-const CalendarPage = () => {
+const Calendar = () => {
   const [view, setView] = React.useState<"Month" | "Week">("Month");
   const [currentPage, setCurrentPage] = React.useState(0);
   const [events, setEvents] = React.useState([
@@ -22,7 +22,7 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="opacity-100 transition-opacity duration-700 ease-in-out">
+    <div className="opacity-100 transition-opacity duration-700 ease-in-out gap-0">
       <CalendarHeader
         view={view}
         setView={setView}
@@ -39,4 +39,4 @@ const CalendarPage = () => {
   );
 };
 
-export default CalendarPage;
+export default Calendar;

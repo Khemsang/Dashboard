@@ -14,7 +14,7 @@ const Order_List: React.FC = () => {
         <table className="min-w-full divide-y divide-gray-200 dark:text-white">
           <thead className="bg-gray-50 dark:bg-slate-500">
             <tr>
-              {['Customer', 'Product', 'Order Number', 'Date', 'Status', 'Confirmation'].map(header => (
+              {['Customer', 'Product', 'Order Number', 'Date', 'Status', 'Confirmation'].map((header) => (
                 <th
                   key={header}
                   className="px-4 sm:px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -26,8 +26,8 @@ const Order_List: React.FC = () => {
           </thead>
 
           <tbody className="bg-white divide-y divide-gray-200 dark:bg-slate-400">
-            {orderData.map((order: Order) => (
-              <tr key={order.orderNumber}>
+            {orderData.map((order: Order, index) => (
+              <tr key={`${order.orderNumber}-${index}`}>
                 <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium">{order.customer}</div>
                   <div className="text-sm text-gray-500">{order.email}</div>

@@ -25,7 +25,7 @@ const cornerVariants = {
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="p-4 md:p-6 space-y-6 dark:bg-gray-900 min-h-screen">
+    <div className="p-4 md:p-6 space-y-6 dark:bg-gray-900 min-h-screen container">
       {/* States Cards - Animate from Top Left */}
       <motion.div
         className="w-full"
