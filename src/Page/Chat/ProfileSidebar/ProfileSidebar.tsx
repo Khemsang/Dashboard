@@ -6,7 +6,7 @@ interface Props {
 }
 
 const styles = {
-  container: 'bg-white p-6 h-full overflow-y-auto max-w-xs',
+  container: 'bg-white p-6 h-full overflow-y-auto max-w-xs md:border-l md:border-gray-200', // ✅ border only on desktop
   avatarWrapper: 'w-24 h-24 mb-4 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-3xl',
   name: 'text-xl font-semibold text-gray-900 mb-1',
   title: 'text-sm text-gray-500 mb-6',

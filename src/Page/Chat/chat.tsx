@@ -11,16 +11,16 @@ const Chat: React.FC = () => {
   const [profileUser, setProfileUser] = useState<User | null>(null); 
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState<ChatMessage[]>([]);
-  const [view, setView] = useState<View>('sidebar');  // Mobile view state
+  const [view, setView] = useState<View>('sidebar');  // ✅ Mobile starts on sidebar
 
-  // On mount, select first user by default and load chat
+  // On mount, preload first user data but stay in sidebar view on mobile
   useEffect(() => {
     if (activeConversations.length > 0 && !selectedUser) {
       const firstUser = activeConversations[0];
       setSelectedUser(firstUser);
       setProfileUser(firstUser); // set for mobile profile toggle
       setChat(chatMessages[firstUser.id] || []);
-      setView('chat');  // show chat view by default on mobile
+      setView('sidebar');  // ✅ Keep on sidebar view for mobile
     }
   }, [selectedUser]);
 
@@ -63,14 +63,14 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div className="flex h-full w-full ">
+    <div className="flex h-full w-full">
       {/* Desktop Layout */}
       <div className="hidden md:flex flex-grow h-full">
         <div className="flex flex-grow">
-          <div className="flex-[1] ">
+          <div className="flex-[1]">
             <ChatSidebar users={activeConversations} onUserSelect={handleUserSelect} />
           </div>
-          <div className="flex-[2] border-r border-gray-200">
+          <div className="flex-[2] ">
             {selectedUser ? (
               <ChatWindow
                 chat={chat}

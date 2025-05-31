@@ -19,17 +19,15 @@ import { UserProvider } from "./Page/ProfilePage/ProfileContext/ProfileContext";
 import MainECommerce from "./Page/Main_eCommerce/MainECommerce ";
 import { useLoading } from "./Page/LoadingContext/LoadingContext";
 
-
 const App = () => {
   const location = useLocation();
   const { loading, setLoading } = useLoading();
 
- 
   useEffect(() => {
     setLoading(true);
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, 700); 
+    }, 700);
     return () => clearTimeout(timeout);
   }, [location.pathname]);
 
@@ -38,7 +36,7 @@ const App = () => {
   if (loading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-white dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-25 w-25 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-blue-500"></div>
       </div>
     );
   }
@@ -54,9 +52,8 @@ const App = () => {
         </div>
       ) : (
         <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 container">
-          <div className="hidden md:block">
-            <Sidebar />
-          </div>
+          {/* ✅ Sidebar is always rendered and handles its own responsiveness */}
+          <Sidebar />
 
           <div className="flex flex-col flex-1 w-full">
             <Topbar />

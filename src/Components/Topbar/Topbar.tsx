@@ -6,8 +6,6 @@ import {
   MessageCircle,
   Sun,
   Calendar,
-  Menu,
-  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUser } from "../../Page/ProfilePage/ProfileContext/ProfileContext";
@@ -33,7 +31,6 @@ const animationVariants = {
 const Topbar: React.FC = () => {
   const { currentUser } = useUser();
   const location = useLocation();
-
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -70,16 +67,12 @@ const Topbar: React.FC = () => {
     document.body.classList.toggle("dark", dark);
   }, [location]);
 
- 
-
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
     document.body.classList.toggle("dark", newTheme);
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
-
-  
 
   return (
     <motion.header
@@ -88,23 +81,14 @@ const Topbar: React.FC = () => {
       variants={animationVariants}
       className="w-full bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 py-3 flex items-center justify-between shadow-sm relative"
     >
-     
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden text-gray-700 dark:text-white"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
-
-
       <input
         type="text"
         placeholder="Search..."
         className="hidden md:block w-1/3 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
       />
 
-      <div className="flex items-center space-x-4 relative">
+      {/* Updated this div to be justify-end on mobile and justify-start on md+ */}
+      <div className="flex items-center space-x-4 relative justify-end w-full md:justify-start md:w-auto">
         <Sun
           onClick={toggleTheme}
           className={`cursor-pointer ${

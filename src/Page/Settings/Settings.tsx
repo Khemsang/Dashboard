@@ -34,11 +34,11 @@ type PasswordInputProps = {
 
 // Reusable Password Input Component
 const PasswordInput: React.FC<PasswordInputProps> = ({ show, toggle, placeholder }) => (
-  <div className="relative">
+  <div className="relative w-full">
     <input
       type={show ? "text" : "password"}
       placeholder={placeholder}
-      className="w-full border border-gray-300 rounded p-2 pr-10"
+      className="w-full border border-gray-300 rounded p-2 pr-10 dark:bg-gray-200"
     />
     <button
       type="button"
@@ -59,30 +59,30 @@ const Settings: React.FC = () => {
   const [showConfirm, setShowConfirm] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f5f8fd] p-8 dark:bg-gray-900">
+    <div className="min-h-screen bg-[#f5f8fd] px-4 py-6  dark:bg-gray-900">
       <h2 className="text-2xl font-semibold text-gray-800 mb-1 dark:text-white">
         Account Information
       </h2>
-      <p className="text-gray-500 mb-6">Edit your profile quickly</p>
+      <p className="text-gray-500 mb-6 dark:text-gray-300">Edit your profile quickly</p>
 
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full max-w-6xl mx-auto"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {/* Left Column - Profile Info */}
         <motion.div
-          className="bg-white p-6 rounded-lg shadow dark:bg-slate-400"
+          className="bg-white p-4 sm:p-6 rounded-lg shadow dark:bg-slate-700 w-full"
           variants={sideVariants}
           initial="hiddenLeft"
           animate="visible"
         >
-          <div className="flex mb-4">
+          <div className="flex justify-center sm:justify-start mb-4">
             <img
               src={currentUser.profileImage}
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover"
             />
           </div>
 
@@ -96,36 +96,36 @@ const Settings: React.FC = () => {
               type="text"
               placeholder="Full Name"
               defaultValue={currentUser.name}
-              className="w-full border border-gray-300 rounded p-2"
+              className="w-full border border-gray-300 rounded p-2 dark:bg-gray-200"
               variants={inputVariants}
             />
             <motion.input
               type="text"
               placeholder="Role"
               defaultValue={currentUser.role}
-              className="w-full border border-gray-300 rounded p-2"
+              className="w-full border border-gray-300 rounded p-2 dark:bg-gray-200"
               variants={inputVariants}
             />
             <motion.input
               type="email"
               placeholder="Email Address"
-              className="w-full border border-gray-300 rounded p-2"
+              className="w-full border border-gray-300 rounded p-2 dark:bg-gray-200"
               variants={inputVariants}
             />
             <motion.input
               type="text"
               placeholder="Website"
-              className="w-full border border-gray-300 rounded p-2"
+              className="w-full border border-gray-300 rounded p-2 dark:bg-gray-200"
               variants={inputVariants}
             />
             <motion.textarea
               placeholder="Bio"
-              className="w-full border border-gray-300 rounded p-2 h-24"
+              className="w-full border border-gray-300 rounded p-2 h-24 dark:bg-gray-200"
               variants={inputVariants}
             />
             <motion.button
               type="submit"
-              className="bg-blue-600 text-white py-2 px-4 rounded w-full"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full transition-colors duration-300"
               variants={inputVariants}
             >
               Update Now
@@ -135,12 +135,14 @@ const Settings: React.FC = () => {
 
         {/* Right Column - Change Password */}
         <motion.div
-          className="bg-white p-6 rounded-lg shadow dark:bg-slate-400"
+          className="bg-white p-4 sm:p-6 rounded-lg shadow dark:bg-slate-700 w-full"
           variants={sideVariants}
           initial="hiddenRight"
           animate="visible"
         >
-          <h3 className="text-lg font-semibold mb-4">Password</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
+            Password
+          </h3>
 
           <motion.form
             className="space-y-4"
@@ -174,7 +176,7 @@ const Settings: React.FC = () => {
 
             <motion.button
               type="submit"
-              className="bg-blue-600 text-white py-2 px-4 rounded w-full"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full transition-colors duration-300"
               variants={inputVariants}
             >
               Save

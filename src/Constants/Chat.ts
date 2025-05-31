@@ -1,5 +1,3 @@
-// Constants/Chat.ts
-
 // Types
 export interface ChatMessage {
   sender: string;
@@ -8,7 +6,7 @@ export interface ChatMessage {
 }
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   profilePic: string;
   lastMessage: string;
@@ -18,7 +16,7 @@ export interface User {
 // 30 Users with detailed messages
 export const activeConversations: User[] = [
   {
-    id: 1,
+    id: '1',
     name: 'Alice Johnson',
     profilePic: 'https://i.pravatar.cc/150?img=1',
     lastMessage: 'Catch up soon!',
@@ -29,7 +27,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 2,
+    id: '2',
     name: 'Bob Smith',
     profilePic: 'https://i.pravatar.cc/150?img=2',
     lastMessage: 'See you at the meeting.',
@@ -39,9 +37,8 @@ export const activeConversations: User[] = [
       { sender: 'Bob Smith', text: 'Great! See you then.', time: '10:35 AM' }
     ]
   },
-  // ... (Users 3-15)
   {
-    id: 3,
+    id: '3',
     name: 'Olivia Benson',
     profilePic: 'https://i.pravatar.cc/150?img=15',
     lastMessage: 'Send them over and I’ll give you feedback.',
@@ -50,9 +47,8 @@ export const activeConversations: User[] = [
       { sender: 'You', text: 'Sure, send them over and I’ll give you feedback.', time: '8:05 PM' }
     ]
   },
-  // Additional users 16-30
   {
-    id: 16,
+    id: '16',
     name: 'Ethan Hunt',
     profilePic: 'https://i.pravatar.cc/150?img=16',
     lastMessage: 'Mission accomplished!',
@@ -63,7 +59,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 17,
+    id: '17',
     name: 'Sophie Turner',
     profilePic: 'https://i.pravatar.cc/150?img=17',
     lastMessage: 'Excited to see you!',
@@ -73,7 +69,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 18,
+    id: '18',
     name: 'Chris Evans',
     profilePic: 'https://i.pravatar.cc/150?img=18',
     lastMessage: 'Let’s do this!',
@@ -83,7 +79,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 19,
+    id: '19',
     name: 'Emma Watson',
     profilePic: 'https://i.pravatar.cc/150?img=19',
     lastMessage: 'Let me know your thoughts.',
@@ -93,7 +89,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 20,
+    id: '20',
     name: 'Tom Hanks',
     profilePic: 'https://i.pravatar.cc/150?img=20',
     lastMessage: 'Looking forward to it!',
@@ -103,7 +99,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 21,
+    id: '21',
     name: 'Zendaya',
     profilePic: 'https://i.pravatar.cc/150?img=21',
     lastMessage: 'Let’s connect soon.',
@@ -113,7 +109,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 22,
+    id: '22',
     name: 'Robert Downey Jr.',
     profilePic: 'https://i.pravatar.cc/150?img=22',
     lastMessage: 'Great idea!',
@@ -124,7 +120,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 23,
+    id: '23',
     name: 'Gal Gadot',
     profilePic: 'https://i.pravatar.cc/150?img=23',
     lastMessage: 'Let me know!',
@@ -134,7 +130,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 24,
+    id: '24',
     name: 'Ryan Reynolds',
     profilePic: 'https://i.pravatar.cc/150?img=24',
     lastMessage: 'Let’s chat tomorrow.',
@@ -144,7 +140,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 25,
+    id: '25',
     name: 'Mila Kunis',
     profilePic: 'https://i.pravatar.cc/150?img=25',
     lastMessage: 'See you soon!',
@@ -154,7 +150,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 26,
+    id: '26',
     name: 'Leonardo DiCaprio',
     profilePic: 'https://i.pravatar.cc/150?img=26',
     lastMessage: 'Sounds perfect!',
@@ -164,7 +160,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 27,
+    id: '27',
     name: 'Margot Robbie',
     profilePic: 'https://i.pravatar.cc/150?img=27',
     lastMessage: 'Catch up soon!',
@@ -174,7 +170,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 28,
+    id: '28',
     name: 'Chris Hemsworth',
     profilePic: 'https://i.pravatar.cc/150?img=28',
     lastMessage: 'Let’s hit the gym!',
@@ -184,7 +180,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 29,
+    id: '29',
     name: 'Scarlett Johansson',
     profilePic: 'https://i.pravatar.cc/150?img=29',
     lastMessage: 'Talk later!',
@@ -194,7 +190,7 @@ export const activeConversations: User[] = [
     ]
   },
   {
-    id: 30,
+    id: '30',
     name: 'Dwayne Johnson',
     profilePic: 'https://i.pravatar.cc/150?img=30',
     lastMessage: 'Looking forward to it!',
@@ -206,7 +202,7 @@ export const activeConversations: User[] = [
 ];
 
 // Create a map of userId -> messages for easy lookup
-export const chatMessages: { [userId: number]: ChatMessage[] } = {};
+export const chatMessages: { [userId: string]: ChatMessage[] } = {};
 
 activeConversations.forEach((user) => {
   chatMessages[user.id] = user.messages;
